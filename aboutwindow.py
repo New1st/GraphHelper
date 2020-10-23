@@ -33,10 +33,14 @@ class AboutWindow(tkinter.Toplevel):
         self.frame.pack(side=tkinter.TOP, fill=tkinter.X, padx=10)
 
         self.buttons = []
-        self._create_buttons(["О программе", "Библиотеки", "Автор"])
+        self.keys = ["О программе", "Библиотеки", "Автор"]
+        self.dictionary = {self.keys[0]: "Приложение для работы с графами, их построения и выполнения ряда операций над ними.", \
+            self.keys[1]: "При создании использовались:\n•tkinter", self.keys[2]: "Сергей Звягин"}
+        self._create_buttons(self.keys)
 
         self.text_field = tkinter.Text(self, bg="#ffffff", height=10, highlightthickness=0)
         self.text_field.pack(side=tkinter.TOP, fill=tkinter.X, padx=10)
+        self.text_field.insert("%d.%d" % (1,0), self.dictionary[self.keys[0]])
 
     def _create_buttons(self, list_):
         for i in list_:
@@ -44,7 +48,7 @@ class AboutWindow(tkinter.Toplevel):
                 relief="flat", highlightthickness=0)
             button.pack(side=tkinter.LEFT)
             button.bind('<Button-1>', self._button_activated)
-            if i == "О программе":
+            if i == self.keys[0]:
                 button["bg"]="#ececec"
             self.buttons.append(button)
 
@@ -55,15 +59,8 @@ class AboutWindow(tkinter.Toplevel):
             else:
                 i["bg"]="#f2f2f2"
 
-        # frame = tkinter.Frame(self, bg="#f2f2f2", bd=4)
-        # frame.pack(side=tkinter.TOP, fill=tkinter.X, anchor=tkinter.NW)
-        # image = tkinter.PhotoImage(file="GraphHelper.gif")
-        #
-        #
-        #
-        # logo = tkinter.Label(frame, text="Блять", image=image)
-        # logo.pack(side=tkinter.LEFT)
-
+        self.text_field.delete("%d.%d" % (1,0), tkinter.END)
+        self.text_field.insert("%d.%d" % (1,0), self.dictionary[event.widget["text"]])
 
 def create(arg):
     global root
