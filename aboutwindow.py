@@ -14,23 +14,23 @@ class AboutWindow(tkinter.Toplevel):
         self._create_window()
 
     def _create_window(self):
-        frame = tkinter.Frame(self, bg="#f2f2f2", bd=10)
-        frame.pack(side=tkinter.TOP, fill=tkinter.X)
+        header_frame = tkinter.Frame(self, bg="#f2f2f2", bd=10)
+        header_frame.pack(side=tkinter.TOP, fill=tkinter.X)
 
         self.image = tkinter.PhotoImage(file="GraphHelper.png")
-        logo = tkinter.Label(frame, bg="#f2f2f2", justify=tkinter.LEFT, \
+        logo = tkinter.Label(header_frame, bg="#f2f2f2", justify=tkinter.LEFT, \
             height=50, width=50, image=self.image)
         logo.pack(side=tkinter.LEFT)
 
-        lable = tkinter.Label(frame, text="GraphHelper", justify=tkinter.LEFT, \
+        lable = tkinter.Label(header_frame, text="GraphHelper", justify=tkinter.LEFT, \
             font="14", bg="#f2f2f2")
         lable.pack(side=tkinter.TOP, anchor=tkinter.NW, padx=5, pady=(5,0))
-        lable = tkinter.Label(frame, text="Версия: "+settings.VERSION, \
+        lable = tkinter.Label(header_frame, text="Версия: "+settings.VERSION, \
             justify=tkinter.LEFT, bg="#f2f2f2")
         lable.pack(side=tkinter.TOP, anchor=tkinter.NW, padx=5)
 
-        self.frame = tkinter.Frame(self, bg="#f2f2f2")
-        self.frame.pack(side=tkinter.TOP, fill=tkinter.X, padx=10)
+        self.buttons_frame = tkinter.Frame(self, bg="#f2f2f2")
+        self.buttons_frame.pack(side=tkinter.TOP, fill=tkinter.X, padx=10)
 
         self.buttons = []
         self.keys = ["О программе", "Библиотеки", "Автор"]
@@ -42,9 +42,16 @@ class AboutWindow(tkinter.Toplevel):
         self.text_field.pack(side=tkinter.TOP, fill=tkinter.X, padx=10)
         self.text_field.insert("%d.%d" % (1,0), self.dictionary[self.keys[0]])
 
+        bottom_frame = tkinter.Frame(self, bg="#f2f2f2", bd=10)
+        bottom_frame.pack(side=tkinter.TOP, fill=tkinter.X)
+
+        button = tkinter.Button(bottom_frame, text="Закрыть", bg="#f2f2f2", \
+            relief="flat", highlightthickness=0, command=self.destroy)
+        button.pack(side=tkinter.RIGHT)
+
     def _create_buttons(self, list_):
         for i in list_:
-            button = tkinter.Button(self.frame, text=i, bg="#f2f2f2", \
+            button = tkinter.Button(self.buttons_frame, text=i, bg="#f2f2f2", \
                 relief="flat", highlightthickness=0)
             button.pack(side=tkinter.LEFT)
             button.bind('<Button-1>', self._button_activated)

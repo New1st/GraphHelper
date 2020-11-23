@@ -1,5 +1,7 @@
 import tkinter
+
 import aboutwindow
+import settings
 
 class Main(tkinter.Frame):
 
@@ -30,12 +32,14 @@ class Main(tkinter.Frame):
         toolbar = tkinter.Frame(bg="#f2f2f2", bd=2)
         toolbar.pack(side = tkinter.TOP, fill=tkinter.X, anchor=tkinter.NW)
 
-        self.icon = tkinter.PhotoImage(file='resources/icons/add_vertex.png')
-        self.btn_vertex_mode = tkinter.Button(toolbar, bg="#f2f2f2", bd=0, \
-            compound=tkinter.TOP, image=self.icon)
-
-        self.btn_vertex_mode.pack(side=tkinter.LEFT)
-		#self.btn_vertex_mode.bind('<Button-1>', self.set_mode)
+        self.tools = []
+        for dict in settings.TOOLS_SETTINGS_ARRAY:
+            self.icon = tkinter.PhotoImage(file=dict["icon"])
+            self.tool_button = tkinter.Button(toolbar, bg="#f2f2f2", bd=0, \
+                compound=tkinter.TOP, image=self.icon)
+            self.tool_button.pack(side=dict["side"])
+            self.tools.append(self.tool_button)
+		    #self.btn_vertex_mode.bind('<Button-1>', self.set_mode)
 
     def open_about_window(self):
         global root
