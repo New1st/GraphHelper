@@ -33,17 +33,24 @@ class Main(tkinter.Frame):
         toolbar.pack(side = tkinter.TOP, fill=tkinter.X, anchor=tkinter.NW)
 
         self.tools = []
+        self.icons= []
+        i = 0
         for dict in settings.TOOLS_SETTINGS_ARRAY:
-            self.icon = tkinter.PhotoImage(file=dict["icon"])
+            icon = tkinter.PhotoImage(file=dict["icon"])
+            self.icons.append(icon)
             self.tool_button = tkinter.Button(toolbar, bg="#f2f2f2", bd=0, \
-                compound=tkinter.TOP, image=self.icon)
+                compound=tkinter.TOP, image=self.icons[i])
             self.tool_button.pack(side=dict["side"])
-            self.tools.append(self.tool_button)
+            #self.tools.append(self.tool_button)
+            i+=1
 		    #self.btn_vertex_mode.bind('<Button-1>', self.set_mode)
 
     def open_about_window(self):
         global root
         aboutwindow.create(root)
+
+    def gg(self):
+        print("aa")
 
 if __name__ == "__main__":
     root = tkinter.Tk()
