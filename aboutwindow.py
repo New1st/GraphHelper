@@ -34,8 +34,9 @@ class AboutWindow(tkinter.Toplevel):
 
         self.buttons = []
         self.keys = ["О программе", "Библиотеки", "Автор"]
-        self.dictionary = {self.keys[0]: "Приложение для работы с графами, их построения и выполнения ряда операций над ними.", \
-            self.keys[1]: "При создании использовались:\n•tkinter", self.keys[2]: "Сергей Звягин"}
+        self.dictionary = {self.keys[0]: settings.ABOUT_STRINGS[0], \
+            self.keys[1]: settings.ABOUT_STRINGS[1], self.keys[2]: \
+            settings.ABOUT_STRINGS[2]}
         self._create_buttons(self.keys)
 
         self.text_field = tkinter.Text(self, bg="#ffffff", height=10, highlightthickness=0)
