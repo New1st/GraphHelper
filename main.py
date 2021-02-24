@@ -2,7 +2,7 @@ import tkinter
 
 import aboutwindow
 import settings
-
+from classes import vertex
 
 class Main(tkinter.Frame):
 
@@ -46,7 +46,7 @@ class Main(tkinter.Frame):
                 highlightthickness=0)
             self.tool_button.pack(side=dict["side"])
             self.tools.append(self.tool_button)
-            self.tool_button.bind('<Button-1>', self.gg)
+            self.tool_button.bind('<Button-1>', self.set_mode)
             i+=1
 
     def create_objectbar(self):
@@ -75,26 +75,49 @@ class Main(tkinter.Frame):
 		#self.objectbar.bind('<Button-1>', self.update_type)
 
     def create_canvas(self):
-        canvas = tkinter.Canvas(
+        self.canvas = tkinter.Canvas(
             root, bg="#ffffff", width=screen_width - 184,
             height = screen_height - 14)
-        canvas.pack(side = tkinter.TOP, fill = tkinter.BOTH)
-
+        self.canvas.pack(side = tkinter.TOP, fill = tkinter.BOTH)
 		# self.canvas.bind('<Motion>', self.create_tip_line)
-		# self.canvas.bind('<Button-1>', self.canvas_click_left)
+        self.canvas.bind('<Button-1>', self.canvas_click_left)
 		# self.canvas.bind('<Button-3>', self.canvas_click_right)
 
     def config_scroll_objectbar(self, event):
         self.scroll_obj_canvas.configure(
-            scrollregion=self.scroll_obj_canvas.bbox("all"),
-            width=200,height=200)
+            scrollregion=self.scroll_obj_canvas.bbox("all"))
 
     def open_about_window(self):
         global root
         aboutwindow.create(root)
 
-    def gg(self, event):
-        print("aa")
+    def set_mode(self, event):
+        if (event.widget == self.tools[0]):
+            self.mode = 1
+        if (event.widget == self.tools[1]):
+            self.mode = 2
+
+    def canvas_click_left(self, event):
+        if self.mode == 1:
+            name = "V"+str(1)
+            circle = self.canvas.create_oval(event.x-5, event.y+5, event.x+5, event.y-5, fill = "#8b90f7")
+    		# if text_lock_vertices == False:
+    		# 	self.lable = canvas.create_text(self.x+15, self.y+15, text="V"+str(self.number))
+            label = self.canvas.create_text(event.x+15, event.y+15, text=name)
+
+            frame = tkinter.LabelFrame(self.objectbar, text = "Вершина", bg = "#EBEBEB", bd=2, width = 160, height = 40)
+    		# self.frame.bind('<Button-1>', self.treatment)
+            frame.pack(anchor = tkinter.NW, side = tkinter.TOP, fill = tkinter.X)
+            frame.pack_propagate(False)
+
+            newVertex = vertex.Vertex(name, circle, label, frame)
+
+
+    		# self.name_block = tkinter.Label(self.frame, justify = tkinter.LEFT, text = self.name, bg = "#EBEBEB")
+    		# self.name_block.pack(side = tkinter.LEFT)
+    		# self.name_block.bind('<Button-1>', self.treatment)
+    		# self.comment_block = tkinter.Label(self.frame, justify = tkinter.LEFT, text = self.comment ,width = 15, bg = "#EBEBEB")
+    		# self.comment_block.pack(side = tkinter.RIGHT)
 
 if __name__ == "__main__":
     root = tkinter.Tk()
