@@ -15,6 +15,7 @@ class Main(tkinter.Frame):
         self._create_menu()
         self._create_toolbar()
         self._create_objectbar()
+        self._create_bottombar()
         self._create_canvas()
 
     def _create_menu(self):
@@ -47,7 +48,7 @@ class Main(tkinter.Frame):
             self.tool_button = tkinter.Button(
                 toolbar, bg="#f2f2f2", bd=0,
                 compound=tkinter.TOP, image=self.icons[i],
-                highlightthickness=0)
+                highlightthickness=0, state=tkinter.DISABLED)
             self.tool_button.pack(side=dict["side"])
             self.tools.append(self.tool_button)
             self.tool_button.bind('<Button-1>', self.set_mode)
@@ -78,10 +79,37 @@ class Main(tkinter.Frame):
         self.objectbar.bind("<Configure>", self.config_scroll_objectbar)
 		#self.objectbar.bind('<Button-1>', self.update_type)
 
+    def _create_bottombar(self):
+        bottombar = tkinter.Frame(bg="#EBEBEB", bd=0, width = 26)
+        bottombar.pack(side = tkinter.BOTTOM, fill = tkinter.X, anchor = tkinter.SW)
+
+        message = tkinter.Label(bottombar, text = "Сообщение: ", width = 10, bg = "#EBEBEB")
+        message.pack(side = tkinter.LEFT)
+        self.message = tkinter.Label(bottombar, fg = "#000000", justify = tkinter.LEFT, bg = "#EBEBEB")
+        self.message.pack(side = tkinter.LEFT, fill = tkinter.BOTH)
+        self.print_message("Создайте или загрузите граф")
+
+    def print_message(self, string):
+        self.message["text"] = string
+        root.after(2000, self._fading)
+        self.fading_coefficient = 0
+
+    def _fading(self):
+        arr_1 = ["#1a1a1a", "#585858", "#939393", "#cecece", "#ebebeb"]
+        self.message["fg"] = arr_1[self.fading_coefficient]
+        self.fading_coefficient+=1
+
+        if self.fading_coefficient == 5:
+            self.message["text"] = '\0'
+            self.message["fg"] = "#000000"
+            self.fading_coefficient=0
+            return
+        root.after(70, self._fading)
+
     def _create_canvas(self):
         self.canvas = tkinter.Canvas(
-            root, bg="#ffffff", width=screen_width - 184,
-            height = screen_height - 14)
+            root, bg="#f2f2f2", width=screen_width - 184,
+            height = screen_height - 14, state=tkinter.DISABLED)
         self.canvas.pack(side = tkinter.TOP, fill = tkinter.BOTH)
 		# self.canvas.bind('<Motion>', self.create_tip_line)
         self.canvas.bind('<Button-1>', self.canvas_click_left)
@@ -108,9 +136,15 @@ class Main(tkinter.Frame):
         graph.objectbar = self.objectbar
         self.current_graph = graph
 
+        for tool in self.tools:
+            tool["state"] = tkinter.NORMAL
+        self.canvas["state"] = tkinter.NORMAL
+        self.canvas["bg"] = "#ffffff"
+
     def canvas_click_left(self, event):
         if self.mode == 1:
-            self.current_graph.create_vertex(event.x, event.y)
+            if self.current_graph.create_vertex(event.x, event.y) == False:
+                self.print_message("Слишком близко к уже существующей вершине")
 
 
 if __name__ == "__main__":
