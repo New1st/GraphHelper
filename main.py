@@ -1,6 +1,7 @@
 import tkinter
 
 import aboutwindow
+import newgraphwindow
 import settings
 from classes import vertex
 
@@ -9,16 +10,18 @@ class Main(tkinter.Frame):
 
     def __init__(self, root):
         super().__init__(root)
-        self.create_menu()
-        self.create_toolbar()
-        self.create_objectbar()
-        self.create_canvas()
+        self.current_graph = None
+        self._create_menu()
+        self._create_toolbar()
+        self._create_objectbar()
+        self._create_canvas()
 
-    def create_menu(self):
+    def _create_menu(self):
         self.menu = tkinter.Menu(self, relief="flat")
         root.config(menu=self.menu)
 
         file_menu = tkinter.Menu(self.menu, tearoff=0, relief="flat")
+        file_menu.add_command(label="Создать граф", command=self.create_new_graph)
         file_menu.add_command(label="Открыть...")
         file_menu.add_command(label="Сохранить...")
         file_menu.add_command(label="Выход")
@@ -30,7 +33,7 @@ class Main(tkinter.Frame):
         self.menu.add_cascade(label="Файл", menu=file_menu)
         self.menu.add_cascade(label="Справка", menu=help_menu)
 
-    def create_toolbar(self):
+    def _create_toolbar(self):
         toolbar = tkinter.Frame(bg="#f2f2f2", bd=3)
         toolbar.pack(side = tkinter.TOP, fill=tkinter.X, anchor=tkinter.NW)
 
@@ -49,7 +52,7 @@ class Main(tkinter.Frame):
             self.tool_button.bind('<Button-1>', self.set_mode)
             i+=1
 
-    def create_objectbar(self):
+    def _create_objectbar(self):
         objectbar = tkinter.LabelFrame(
             text="Объекты:", bg="#EBEBEB", bd=2,
             width=184, relief="flat")
@@ -74,7 +77,7 @@ class Main(tkinter.Frame):
         self.objectbar.bind("<Configure>", self.config_scroll_objectbar)
 		#self.objectbar.bind('<Button-1>', self.update_type)
 
-    def create_canvas(self):
+    def _create_canvas(self):
         self.canvas = tkinter.Canvas(
             root, bg="#ffffff", width=screen_width - 184,
             height = screen_height - 14)
@@ -87,9 +90,11 @@ class Main(tkinter.Frame):
         self.scroll_obj_canvas.configure(
             scrollregion=self.scroll_obj_canvas.bbox("all"))
 
+    def create_new_graph(self):
+        newgraphwindow.NewGraphWindow(self)
+
     def open_about_window(self):
-        global root
-        aboutwindow.create(root)
+        aboutwindow.AboutWindow(root)
 
     def set_mode(self, event):
         if (event.widget == self.tools[0]):
@@ -112,12 +117,13 @@ class Main(tkinter.Frame):
 
             newVertex = vertex.Vertex(name, circle, label, frame)
 
-
     		# self.name_block = tkinter.Label(self.frame, justify = tkinter.LEFT, text = self.name, bg = "#EBEBEB")
     		# self.name_block.pack(side = tkinter.LEFT)
     		# self.name_block.bind('<Button-1>', self.treatment)
     		# self.comment_block = tkinter.Label(self.frame, justify = tkinter.LEFT, text = self.comment ,width = 15, bg = "#EBEBEB")
     		# self.comment_block.pack(side = tkinter.RIGHT)
+
+
 
 if __name__ == "__main__":
     root = tkinter.Tk()

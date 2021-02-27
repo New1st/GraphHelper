@@ -1,9 +1,6 @@
 import tkinter
-import settings
 
-
-class AboutWindow(tkinter.Toplevel):
-
+class NewGraphWindow(tkinter.Toplevel):
 
     def __init__(self, master):
         tkinter.Toplevel.__init__(self, master)
@@ -58,26 +55,3 @@ class AboutWindow(tkinter.Toplevel):
             bottom_frame, text="Закрыть", bg="#f2f2f2",
             relief="flat", highlightthickness=0, command=self.destroy)
         button.pack(side=tkinter.RIGHT)
-
-    def _create_buttons(self, list_):
-        for i in list_:
-            button = tkinter.Button(
-                self.buttons_frame, text=i, bg="#f2f2f2",
-                relief="flat", highlightthickness=0)
-            button.pack(side=tkinter.LEFT)
-            button.bind('<Button-1>', self._button_activated)
-            if i == self.keys[0]:
-                button["bg"] = "#ececec"
-            self.buttons.append(button)
-
-    def _button_activated(self, event):
-        for i in self.buttons:
-            if i is event.widget:
-                i["bg"] = "#ececec"
-            else:
-                i["bg"] = "#f2f2f2"
-
-        self.text_field.config(state=tkinter.NORMAL)
-        self.text_field.delete("%d.%d" % (1,0), tkinter.END)
-        self.text_field.insert("%d.%d" % (1,0), self.dictionary[event.widget["text"]])
-        self.text_field.config(state=tkinter.DISABLED)
