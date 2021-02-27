@@ -1,10 +1,12 @@
-import vertex
+from classes import vertex
 
-Class Graph:
+class Graph:
 
 
-    def __init__(self, name="Новый граф", tk_canvas_obj, tk_canvas_label, tk_obj_frame):
+    def __init__(self, name, matrix):
         self.name = name
-        self.obj = tk_canvas_obj
-        self.label = tk_canvas_label
-        self.frame = tk_canvas_label
+        self.matrix = matrix
+        self.current_vertex = 1
+        self.current_edge = 1
+        self.vertices = []
+        self.edges = []

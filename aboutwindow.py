@@ -56,14 +56,14 @@ class AboutWindow(tkinter.Toplevel):
 
         button = tkinter.Button(
             bottom_frame, text="Закрыть", bg="#f2f2f2",
-            relief="flat", highlightthickness=0, command=self.destroy)
+            relief="groove", highlightthickness=0, command=self.destroy)
         button.pack(side=tkinter.RIGHT)
 
     def _create_buttons(self, list_):
         for i in list_:
             button = tkinter.Button(
                 self.buttons_frame, text=i, bg="#f2f2f2",
-                relief="flat", highlightthickness=0)
+                relief="groove", highlightthickness=0)
             button.pack(side=tkinter.LEFT)
             button.bind('<Button-1>', self._button_activated)
             if i == self.keys[0]:

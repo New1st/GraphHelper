@@ -102,6 +102,9 @@ class Main(tkinter.Frame):
         if (event.widget == self.tools[1]):
             self.mode = 2
 
+    def set_graph(self):
+        print("YES")
+
     def canvas_click_left(self, event):
         if self.mode == 1:
             name = "V"+str(1)
