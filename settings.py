@@ -1,4 +1,4 @@
-VERSION = "1.0.4"
+VERSION = "0.2.1"
 
 TOOLS_SETTINGS_ARRAY = [
     {"name": "Режим добавления вершин", "side": "left", \

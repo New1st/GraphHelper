@@ -11,6 +11,7 @@ class Main(tkinter.Frame):
     def __init__(self, root):
         super().__init__(root)
         self.current_graph = None
+        self.mode = 0
         self._create_menu()
         self._create_toolbar()
         self._create_objectbar()
@@ -102,30 +103,14 @@ class Main(tkinter.Frame):
         if (event.widget == self.tools[1]):
             self.mode = 2
 
-    def set_graph(self):
-        print("YES")
+    def set_graph(self, graph):
+        graph.canvas = self.canvas
+        graph.objectbar = self.objectbar
+        self.current_graph = graph
 
     def canvas_click_left(self, event):
         if self.mode == 1:
-            name = "V"+str(1)
-            circle = self.canvas.create_oval(event.x-5, event.y+5, event.x+5, event.y-5, fill = "#8b90f7")
-    		# if text_lock_vertices == False:
-    		# 	self.lable = canvas.create_text(self.x+15, self.y+15, text="V"+str(self.number))
-            label = self.canvas.create_text(event.x+15, event.y+15, text=name)
-
-            frame = tkinter.LabelFrame(self.objectbar, text = "Вершина", bg = "#EBEBEB", bd=2, width = 160, height = 40)
-    		# self.frame.bind('<Button-1>', self.treatment)
-            frame.pack(anchor = tkinter.NW, side = tkinter.TOP, fill = tkinter.X)
-            frame.pack_propagate(False)
-
-            newVertex = vertex.Vertex(name, circle, label, frame)
-
-    		# self.name_block = tkinter.Label(self.frame, justify = tkinter.LEFT, text = self.name, bg = "#EBEBEB")
-    		# self.name_block.pack(side = tkinter.LEFT)
-    		# self.name_block.bind('<Button-1>', self.treatment)
-    		# self.comment_block = tkinter.Label(self.frame, justify = tkinter.LEFT, text = self.comment ,width = 15, bg = "#EBEBEB")
-    		# self.comment_block.pack(side = tkinter.RIGHT)
-
+            self.current_graph.create_vertex(event.x, event.y)
 
 
 if __name__ == "__main__":

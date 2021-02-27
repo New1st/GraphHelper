@@ -65,9 +65,6 @@ class NewGraphWindow(tkinter.Toplevel):
 
         list(filter(([" "]).__ne__, matrix))
 
-        print("f")
-        print(matrix)
-
         for i in range(1, len(matrix)):
             if len(matrix[i-1]) != len(matrix[i]):
                 return self._error()
@@ -80,6 +77,7 @@ class NewGraphWindow(tkinter.Toplevel):
                     if count != 2:
                         return self._error()
         except ValueError:
+            matrix = []
             pass
 
         return self._accept(matrix)
@@ -89,6 +87,5 @@ class NewGraphWindow(tkinter.Toplevel):
                                      "В записи матрицы допущена ошибка.")
 
     def _accept(self, matrix):
-        print("TUT")
         self.master.set_graph(graph.Graph(self.name.get(), matrix))
         self.destroy()
