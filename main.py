@@ -6,9 +6,16 @@ import settings
 from classes import vertex
 
 class Main(tkinter.Frame):
-
+    """Класс главного окна"""
 
     def __init__(self, root):
+        """Конструктор главного окна
+
+        Вызывает метод инициализации из родительского класса, передавая root.
+        Первично устанавливает режим работы приложения.
+        Вызвает методы построения условных блоков графики.
+
+        """
         super().__init__(root)
         self.current_graph = None
         self.mode = 0
@@ -19,6 +26,7 @@ class Main(tkinter.Frame):
         self._create_canvas()
 
     def _create_menu(self):
+        """ Построение главного меню"""
         self.menu = tkinter.Menu(self, relief="flat")
         root.config(menu=self.menu)
 
@@ -29,13 +37,14 @@ class Main(tkinter.Frame):
         file_menu.add_command(label="Выход")
 
         help_menu = tkinter.Menu(self.menu, tearoff=0, relief="flat")
-        #help_menu.add_command(label="Локальная справка")
+        # help_menu.add_command(label="Локальная справка")
         help_menu.add_command(label="О программе", command=self.open_about_window)
 
         self.menu.add_cascade(label="Файл", menu=file_menu)
         self.menu.add_cascade(label="Справка", menu=help_menu)
 
     def _create_toolbar(self):
+        """ Построение панели инструментов"""
         toolbar = tkinter.Frame(bg="#f2f2f2", bd=3)
         toolbar.pack(side = tkinter.TOP, fill=tkinter.X, anchor=tkinter.NW)
 
@@ -55,6 +64,7 @@ class Main(tkinter.Frame):
             i+=1
 
     def _create_objectbar(self):
+        """ Построение панели объектов"""
         objectbar = tkinter.LabelFrame(
             text="Объекты:", bg="#EBEBEB", bd=2,
             width=184, relief="flat")
@@ -77,9 +87,9 @@ class Main(tkinter.Frame):
         self.scroll_obj_canvas.pack(side = tkinter.RIGHT, fill=tkinter.Y)
 
         self.objectbar.bind("<Configure>", self.config_scroll_objectbar)
-		#self.objectbar.bind('<Button-1>', self.update_type)
 
     def _create_bottombar(self):
+        """ Построение панели состояния"""
         bottombar = tkinter.Frame(bg="#EBEBEB", bd=0, width = 26)
         bottombar.pack(side = tkinter.BOTTOM, fill = tkinter.X, anchor = tkinter.SW)
 
@@ -87,14 +97,30 @@ class Main(tkinter.Frame):
         message.pack(side = tkinter.LEFT)
         self.message = tkinter.Label(bottombar, fg = "#000000", justify = tkinter.LEFT, bg = "#EBEBEB")
         self.message.pack(side = tkinter.LEFT, fill = tkinter.BOTH)
-        self.print_message("Создайте или загрузите граф")
+        self.print_message(settings.MESSAGES["GREETING"])
+
+    def _create_canvas(self):
+        """Построение холста"""
+        self.canvas = tkinter.Canvas(
+            root, bg="#f2f2f2", width=screen_width - 184,
+            height = screen_height - 14, state=tkinter.DISABLED)
+        self.canvas.pack(side = tkinter.TOP, fill = tkinter.BOTH)
+		# self.canvas.bind('<Motion>', self.create_tip_line)
+        self.canvas.bind('<Button-1>', self.canvas_click_left)
+
+    def config_scroll_objectbar(self, event):
+        """Конфигуратор скролла"""
+        self.scroll_obj_canvas.configure(
+            scrollregion=self.scroll_obj_canvas.bbox("all"))
 
     def print_message(self, string):
+        """Вывод сообщения с соответствующее поле в панели состояния"""
         self.message["text"] = string
         root.after(2000, self._fading)
         self.fading_coefficient = 0
 
     def _fading(self):
+        """Плавное затухание текста сообщения"""
         arr_1 = ["#1a1a1a", "#585858", "#939393", "#cecece", "#ebebeb"]
         self.message["fg"] = arr_1[self.fading_coefficient]
         self.fading_coefficient+=1
@@ -106,35 +132,30 @@ class Main(tkinter.Frame):
             return
         root.after(70, self._fading)
 
-    def _create_canvas(self):
-        self.canvas = tkinter.Canvas(
-            root, bg="#f2f2f2", width=screen_width - 184,
-            height = screen_height - 14, state=tkinter.DISABLED)
-        self.canvas.pack(side = tkinter.TOP, fill = tkinter.BOTH)
-		# self.canvas.bind('<Motion>', self.create_tip_line)
-        self.canvas.bind('<Button-1>', self.canvas_click_left)
-		# self.canvas.bind('<Button-3>', self.canvas_click_right)
-
-    def config_scroll_objectbar(self, event):
-        self.scroll_obj_canvas.configure(
-            scrollregion=self.scroll_obj_canvas.bbox("all"))
-
     def create_new_graph(self):
-        newgraphwindow.NewGraphWindow(self)
+        """Вызов окна создания графа"""
+        if self.current_graph == None:
+            newgraphwindow.NewGraphWindow(self)
+        else:
+            self.print_message(settings.MESSAGES["WARNING_CREATE"])
 
     def open_about_window(self):
+        """Вызов окна с информацией"""
         aboutwindow.AboutWindow(root)
 
     def set_mode(self, event):
+        """Установка режима работы приложения"""
         if (event.widget == self.tools[0]):
             self.mode = 1
         if (event.widget == self.tools[1]):
             self.mode = 2
 
     def set_graph(self, graph):
+        """Установка полученного из NewGraphWindow графа"""
         graph.canvas = self.canvas
         graph.objectbar = self.objectbar
         self.current_graph = graph
+        self.current_graph.seted()
 
         for tool in self.tools:
             tool["state"] = tkinter.NORMAL
@@ -142,10 +163,12 @@ class Main(tkinter.Frame):
         self.canvas["bg"] = "#ffffff"
 
     def canvas_click_left(self, event):
+        """Обработка нажатия левой кнопкой мыши по области холста"""
         if self.mode == 1:
-            if self.current_graph.create_vertex(event.x, event.y) == False:
-                self.print_message("Слишком близко к уже существующей вершине")
-
+            if not self.current_graph.create_vertex(event.x, event.y):
+                self.print_message(settings.MESSAGES["WARNING_TOO_CLOSE"])
+        if self.mode == 2:
+            self.current_graph.create_edge(event.x, event.y, self.mode)
 
 if __name__ == "__main__":
     root = tkinter.Tk()

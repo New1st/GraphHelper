@@ -46,7 +46,7 @@ class AboutWindow(tkinter.Toplevel):
 
         self.text_field = tkinter.Text(
             self, bg="#ffffff", height=10,
-            highlightthickness=0)
+            highlightthickness=0, wrap="word")
         self.text_field.pack(side=tkinter.TOP, fill=tkinter.X, padx=10)
         self.text_field.insert("%d.%d" % (1,0), self.dictionary[self.keys[0]])
         self.text_field.config(state=tkinter.DISABLED)

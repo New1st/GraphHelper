@@ -69,7 +69,7 @@ class NewGraphWindow(tkinter.Toplevel):
             if len(matrix[i-1]) != len(matrix[i]):
                 return self._error()
         try:
-            if len(matrix) != 0:
+            if not matrix:
                 for i in range(0, len(matrix[0])):
                     count = 0
                     for j in range(0, len(matrix)):
