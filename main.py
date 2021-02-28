@@ -144,10 +144,10 @@ class Main(tkinter.Frame):
         aboutwindow.AboutWindow(root)
 
     def set_mode(self, event):
-        print("T")
         """Установка режима работы приложения"""
         for i in range(0, len(self.tools)):
             if (event.widget == self.tools[i]):
+                self.current_graph.clear_select(None)
                 self.mode = i+1
 
     def set_graph(self, graph):
@@ -165,12 +165,15 @@ class Main(tkinter.Frame):
     def canvas_click_left(self, event):
         """Обработка нажатия левой кнопкой мыши по области холста"""
         if self.mode == 1:
+            if not self.current_graph.moved(event.x, event.y):
+                self.print_message(settings.MESSAGES["WARNING_MOVE_LOOP"])
+        elif self.mode == 2:
             if not self.current_graph.create_vertex(event.x, event.y):
                 self.print_message(settings.MESSAGES["WARNING_TOO_CLOSE"])
-        elif self.mode == 2:
-            self.current_graph.create_line(event.x, event.y)
-        elif self.mode == 3:
-            self.current_graph.create_line(event.x, event.y, True)
+        elif self.mode == 3 or self.mode == 4:
+            self.current_graph.create_line(event.x, event.y,
+                                           True if self.mode == 4 else False)
+
 
 
 if __name__ == "__main__":

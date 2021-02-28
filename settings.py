@@ -1,6 +1,8 @@
 VERSION = "0.2.1"
 
 TOOLS_SETTINGS_ARRAY = [
+    {"name": "Режим курсора", "side": "left",
+     "icon": "resources/icons/cursor.png"},
     {"name": "Режим добавления вершин", "side": "left",
      "icon": "resources/icons/add_vertex.png"},
     {"name": "Режим добавления рёбер", "side": "left",
@@ -27,5 +29,6 @@ ALLOWED_CHARACTERS = ["\n", " ", "-", "0", "1", "2"]
 MESSAGES = {
     "GREETING": "Создайте или загрузите граф",
     "WARNING_TOO_CLOSE": "Слишком близко к уже существующей вершине",
-    "WARNING_CREATE": "Граф уже создан"
+    "WARNING_CREATE": "Граф уже создан",
+    "WARNING_MOVE_LOOP": "Перемещение петель невозможно"
     }
