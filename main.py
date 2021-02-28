@@ -144,11 +144,11 @@ class Main(tkinter.Frame):
         aboutwindow.AboutWindow(root)
 
     def set_mode(self, event):
+        print("T")
         """Установка режима работы приложения"""
-        if (event.widget == self.tools[0]):
-            self.mode = 1
-        if (event.widget == self.tools[1]):
-            self.mode = 2
+        for i in range(0, len(self.tools)):
+            if (event.widget == self.tools[i]):
+                self.mode = i+1
 
     def set_graph(self, graph):
         """Установка полученного из NewGraphWindow графа"""
@@ -167,8 +167,11 @@ class Main(tkinter.Frame):
         if self.mode == 1:
             if not self.current_graph.create_vertex(event.x, event.y):
                 self.print_message(settings.MESSAGES["WARNING_TOO_CLOSE"])
-        if self.mode == 2:
-            self.current_graph.create_edge(event.x, event.y, self.mode)
+        elif self.mode == 2:
+            self.current_graph.create_line(event.x, event.y)
+        elif self.mode == 3:
+            self.current_graph.create_line(event.x, event.y, True)
+
 
 if __name__ == "__main__":
     root = tkinter.Tk()

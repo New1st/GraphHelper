@@ -1,6 +1,7 @@
 import tkinter
+from classes import vertex
 
-class Edge:
+class Line:
 
 
     def __init__(self, name, first_vertex, second_vertex,
@@ -11,3 +12,8 @@ class Edge:
         self.obj = tk_canvas_obj
         self.label = tk_canvas_label
         self.frame = tk_canvas_label
+
+    def belong(self, vertex):
+        if self.first_vertex == vertex or self.second_vertex == vertex:
+            return True
+        return False

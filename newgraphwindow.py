@@ -58,27 +58,28 @@ class NewGraphWindow(tkinter.Toplevel):
 
         matrix = list(list())
         bufer = text.split("\n")
+        bufer = list(filter(None, bufer))
         for i in bufer:
+            list(filter(None, i))
             j = i.split(" ")
-            list(filter(("").__ne__, j))
+            j = list(filter(None, j))
             matrix.append(j)
-
-        list(filter(([" "]).__ne__, matrix))
+            
+        if not matrix:
+            return self._accept(matrix)
 
         for i in range(1, len(matrix)):
             if len(matrix[i-1]) != len(matrix[i]):
+                print(matrix)
                 return self._error()
-        try:
-            if not matrix:
-                for i in range(0, len(matrix[0])):
-                    count = 0
-                    for j in range(0, len(matrix)):
-                        count += abs(int(matrix[j][i]))
-                    if count != 2:
-                        return self._error()
-        except ValueError:
-            matrix = []
-            pass
+
+        if matrix:
+            for i in range(0, len(matrix[0])):
+                count = 0
+                for j in range(0, len(matrix)):
+                    count += abs(int(matrix[j][i]))
+                if count != 2:
+                    return self._error()
 
         return self._accept(matrix)
 
