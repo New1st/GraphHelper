@@ -16,11 +16,12 @@ class Graph:
         self.select_vertex = None
         self.select_vertex_2 = None
         self.movable = None
-        self.current_vertex = 1
         self.tip = None
+        self.current_vertex = 1
         self.current_line= 1
         self.vertices = []
         self.lines = []
+        self.icon = tkinter.PhotoImage(file="resources/icons/delete_obj.png")
 
     def seted(self):
         """Устанавливает обработку нажатия правой кнопкой мыши"""
@@ -106,10 +107,15 @@ class Graph:
         label = self.canvas.create_text(x+15, y+15, text=name)
 
         frame = tkinter.LabelFrame(self.objectbar, text="Вершина", bg="#EBEBEB",
-                                   bd=2, width = 160, height = 40)
-        # self.frame.bind('<Button-1>', self.treatment)
+                                   bd=2, width = 160, height = 45)
         frame.pack(anchor = tkinter.NW, side = tkinter.TOP, fill=tkinter.X)
         frame.pack_propagate(False)
+
+        button = tkinter.Button(
+            frame, bg="#EBEBEB", bd=0, compound=tkinter.TOP, image=self.icon,
+            highlightthickness=0)
+        button.pack(side="right", anchor="ne")
+        button.bind('<Button-1>', self.delete)
 
         name_block = tkinter.Label(frame, justify = tkinter.LEFT, text = name,
                                    bg = "#EBEBEB")
@@ -120,7 +126,7 @@ class Graph:
         comment_block.pack(side = tkinter.RIGHT)
 
         self.vertices.append(vertex.Vertex(name, x, y, circle, label, frame,
-                                           self.canvas))
+                                           button, self.canvas))
         self.current_vertex += 1
         return True
 
@@ -156,10 +162,16 @@ class Graph:
 
                     frame = tkinter.LabelFrame(
                         self.objectbar, text="Петля",
-                        bg="#EBEBEB", bd=2, width=160, height=40)
-        			# self.frame.bind('<Button-1>', self.delete)
-                    frame.pack(anchor = tkinter.NW, side = tkinter.TOP,
-                        fill = tkinter.X)
+                        bg="#EBEBEB", bd=2, width=160, height=45)
+                    frame.pack(anchor=tkinter.NW, side=tkinter.TOP,
+                        fill=tkinter.X)
+
+                    button = tkinter.Button(
+                        frame, bg="#EBEBEB", bd=0, compound=tkinter.TOP, image=self.icon,
+                        highlightthickness=0)
+                    button.pack(side="right", anchor="ne")
+                    button.bind('<Button-1>', self.delete)
+
                     label = tkinter.Label(
                         frame,
                         text=name+" = {"+self.select_vertex.name+", "+ \
@@ -176,7 +188,7 @@ class Graph:
                     self.lines.append(line.Line(
                         name, self.select_vertex, self.select_vertex,
                         reference_point, directed, new_line, label, frame,
-                        self.canvas))
+                        button, self.canvas))
                     self.clear_select(None)
 
                 elif (self.select_vertex_2 == None and
@@ -195,11 +207,18 @@ class Graph:
                 arrowshape=(15,20,3))
             reference_point = [x, y, 0]
 
+
             frame = tkinter.LabelFrame(
                 self.objectbar, text="Дуга" if directed else "Ребро",
-                bg="#EBEBEB", bd=2, width=160, height=40)
+                bg="#EBEBEB", bd=2, width=160, height=45)
             frame.pack(anchor = tkinter.NW, side = tkinter.TOP,
-                fill = tkinter.X)
+                       fill = tkinter.X)
+
+            button = tkinter.Button(
+                frame, bg="#EBEBEB", bd=0, compound=tkinter.TOP, image=self.icon,
+                highlightthickness=0)
+            button.pack(side="right", anchor="ne")
+            button.bind('<Button-1>', self.delete)
 
             label = tkinter.Label(
                 frame,
@@ -215,7 +234,7 @@ class Graph:
             self.canvas.lift(self.select_vertex.obj)
             self.lines.append(line.Line(
                 name, self.select_vertex, self.select_vertex_2, reference_point,
-                directed, new_line, label, frame, self.canvas))
+                directed, new_line, label, frame, button,self.canvas))
             self.clear_select(None)
 
     def moved(self, x, y):
@@ -236,6 +255,54 @@ class Graph:
         elif type(self.movable) == vertex.Vertex:
             self._update_vertex_position(self.movable, x, y)
             self.clear_select(None)
+
+    def clear_canvas(self):
+        self.canvas.delete(tkinter.ALL)
+
+        objects = self.lines + self.vertices
+        for obj in objects:
+            self.canvas.delete(obj.obj)
+            self.canvas.delete(obj.label)
+            obj.frame.destroy()
+            if type(obj) is line.Line:
+                obj.first_vertex = None
+                obj.second_vertex = None
+
+        self.lines.clear()
+        self.vertices.clear()
+        objects.clear()
+        self.current_vertex = 1
+        self.current_line= 1
+        self.clear_select(None)
+
+
+    def delete(self, event, obj=None):
+
+        if obj == None:
+            widget = event.widget
+            objects = self.lines + self.vertices
+            for now_obj in objects:
+                print(now_obj.name)
+                if widget == now_obj.button:
+                    obj = now_obj
+                    break
+            if obj != None:
+                self.delete(event, obj)
+        else:
+            self.canvas.delete(obj.obj)
+            self.canvas.delete(obj.label)
+            obj.frame.destroy()
+            if type(obj) is line.Line:
+                obj.first_vertex = None
+                obj.second_vertex = None
+                self.lines.remove(obj)
+            else:
+                objects = list(self.lines)
+                for now_obj in objects:
+                    if now_obj.belong(obj):
+                        self.delete(event, now_obj)
+                self.vertices.remove(obj)
+
 
     def merging_vertices(self, x, y):
         vertex = self._check_coordinates_vertex(x, y, "self")

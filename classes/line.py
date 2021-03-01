@@ -6,7 +6,7 @@ class Line:
 
     def __init__(self, name, first_vertex, second_vertex, reference_point,
                  directed, tk_canvas_obj, tk_canvas_label,
-                 tk_obj_frame, tk_canvas):
+                 tk_obj_frame, tk_button, tk_canvas):
         self.name = name
         self.first_vertex = first_vertex
         self.second_vertex = second_vertex
@@ -15,6 +15,7 @@ class Line:
         self.label = tk_canvas_label
         self.frame = tk_obj_frame
         self.canvas = tk_canvas
+        self.button = tk_button
         self.reference_point = reference_point
 
     def is_loop(self):

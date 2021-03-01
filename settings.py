@@ -13,10 +13,6 @@ TOOLS_SETTINGS_ARRAY = [
      "icon": "resources/icons/merging_vertices.png"},
     {"name": "Очистить холст", "side": "right",
      "icon": "resources/icons/clear_all.png"},
-    {"name": "Удалить объект", "side": "right",
-     "icon": "resources/icons/delete_obj.png"},
-    {"name": "Видимость линий", "side": "right",
-     "icon": "resources/icons/view_lines_text.png"},
     ]
 
 ABOUT_STRINGS = [

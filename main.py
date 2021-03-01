@@ -148,6 +148,9 @@ class Main(tkinter.Frame):
                 self.current_graph.clear_select(None)
                 self.mode = i+1
 
+        if self.mode == 6:
+            self.current_graph.clear_canvas()
+
     def set_graph(self, graph):
         """Установка полученного из NewGraphWindow графа"""
         graph.canvas = self.canvas
@@ -174,7 +177,6 @@ class Main(tkinter.Frame):
                                            True if self.mode == 4 else False)
         elif self.mode == 5:
             self.current_graph.merging_vertices(event.x, event.y)
-
 
 if __name__ == "__main__":
     root = tkinter.Tk()

@@ -4,13 +4,14 @@ class Vertex:
 
 
     def __init__(self, name, x, y, tk_canvas_obj, tk_canvas_label, tk_obj_frame,
-                 tk_canvas):
+                 tk_button, tk_canvas):
         self.name = name
         self.x = x
         self.y = y
         self.obj = tk_canvas_obj
         self.label = tk_canvas_label
         self.frame = tk_obj_frame
+        self.button = tk_button
         self.canvas = tk_canvas
 
     def update(self):
