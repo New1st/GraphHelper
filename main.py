@@ -103,7 +103,6 @@ class Main(tkinter.Frame):
             root, bg="#f2f2f2", width=screen_width - 184,
             height = screen_height - 14, state=tkinter.DISABLED)
         self.canvas.pack(side = tkinter.TOP, fill = tkinter.BOTH)
-		# self.canvas.bind('<Motion>', self.create_tip_line)
         self.canvas.bind('<Button-1>', self.canvas_click_left)
 
     def config_scroll_objectbar(self, event):

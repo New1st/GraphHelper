@@ -66,9 +66,15 @@ class Graph:
 
                         frame = tkinter.LabelFrame(
                             self.objectbar, text="Ребро",
-                            bg="#EBEBEB", bd=2, width=160, height=40)
+                            bg="#EBEBEB", bd=2, width=160, height=45)
                         frame.pack(anchor = tkinter.NW, side = tkinter.TOP,
                             fill = tkinter.X)
+
+                        button = tkinter.Button(
+                            frame, bg="#EBEBEB", bd=0, compound=tkinter.TOP, image=self.icon,
+                            highlightthickness=0)
+                        button.pack(side="right", anchor="ne")
+                        button.bind('<Button-1>', self.delete)
 
                         label = tkinter.Label(
                             frame,
@@ -85,7 +91,7 @@ class Graph:
                         self.canvas.lift(second.obj)
                         self.lines.append(line.Line(
                             name, first, second, reference_point,
-                            False, new_line, label, frame, self.canvas))
+                            False, new_line, label, frame, button, self.canvas))
                 now_index += 1
 
     def create_vertex(self, x, y, manual=True):
@@ -102,8 +108,6 @@ class Graph:
 
         name = "V"+str(self.current_vertex)
         circle = self.canvas.create_oval(x-5, y+5, x+5, y-5, fill = "#8b90f7")
-        # if text_lock_vertices == False:
-        # 	self.lable = canvas.create_text(self.x+15, self.y+15, text=name)
         label = self.canvas.create_text(x+15, y+15, text=name)
 
         frame = tkinter.LabelFrame(self.objectbar, text="Вершина", bg="#EBEBEB",
@@ -275,9 +279,7 @@ class Graph:
         self.current_line= 1
         self.clear_select(None)
 
-
     def delete(self, event, obj=None):
-
         if obj == None:
             widget = event.widget
             objects = self.lines + self.vertices
@@ -303,8 +305,8 @@ class Graph:
                         self.delete(event, now_obj)
                 self.vertices.remove(obj)
 
-
     def merging_vertices(self, x, y):
+        """Слияние вершин"""
         vertex = self._check_coordinates_vertex(x, y, "self")
         if vertex:
             x = vertex.x
@@ -406,6 +408,7 @@ class Graph:
             return False
 
     def _check_coordinates(self, x, y):
+        """Проверка координат на соответсвии к-н Веришне или Линии"""
         for now in self.lines:
             if (x <= now.reference_point[0]+10 and
                     x >= now.reference_point[0]-10 and
