@@ -27,7 +27,7 @@ class NewGraphWindow(tkinter.Toplevel):
 
         text_frame = tkinter.LabelFrame(
             self, bg="#f2f2f2", bd=5,
-            text="Матрица инцидентности:", relief="flat")
+            text="Матрица смежности простого графа:", relief="flat")
         text_frame.pack(side=tkinter.TOP, fill=tkinter.X)
 
         self.text_field = tkinter.Text(
@@ -64,22 +64,13 @@ class NewGraphWindow(tkinter.Toplevel):
             j = i.split(" ")
             j = list(filter(None, j))
             matrix.append(j)
-            
+
         if not matrix:
             return self._accept(matrix)
 
         for i in range(1, len(matrix)):
-            if len(matrix[i-1]) != len(matrix[i]):
-                print(matrix)
+            if len(matrix[i-1]) != len(matrix):
                 return self._error()
-
-        if matrix:
-            for i in range(0, len(matrix[0])):
-                count = 0
-                for j in range(0, len(matrix)):
-                    count += abs(int(matrix[j][i]))
-                if count != 2:
-                    return self._error()
 
         return self._accept(matrix)
 

@@ -17,22 +17,21 @@ class Line:
         self.canvas = tk_canvas
         self.reference_point = reference_point
 
-    def belong(self, vertex):
-        if self.first_vertex == vertex or self.second_vertex == vertex:
-            return True
-        return False
-
     def is_loop(self):
         if self.first_vertex == self.second_vertex:
             return True
         return False
 
+    def belong(self, vertex):
+        if self.first_vertex == vertex or self.second_vertex == vertex:
+            return True
+        return False
 
     def update(self, count=0):
         self.canvas.delete(self.label)
         self.canvas.delete(self.obj)
 
-        if not self.is_loop():
+        if self.first_vertex != self.second_vertex:
             self.obj = self.canvas.create_line(
                 self.first_vertex.x, self.first_vertex.y,
                 self.reference_point[0], self.reference_point[1],

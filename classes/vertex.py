@@ -10,7 +10,7 @@ class Vertex:
         self.y = y
         self.obj = tk_canvas_obj
         self.label = tk_canvas_label
-        self.frame = tk_canvas_label
+        self.frame = tk_obj_frame
         self.canvas = tk_canvas
 
     def update(self):

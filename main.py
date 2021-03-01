@@ -32,9 +32,7 @@ class Main(tkinter.Frame):
 
         file_menu = tkinter.Menu(self.menu, tearoff=0, relief="flat")
         file_menu.add_command(label="Создать граф", command=self.create_new_graph)
-        file_menu.add_command(label="Открыть...")
-        file_menu.add_command(label="Сохранить...")
-        file_menu.add_command(label="Выход")
+        file_menu.add_command(label="Выход", command=root.destroy)
 
         help_menu = tkinter.Menu(self.menu, tearoff=0, relief="flat")
         # help_menu.add_command(label="Локальная справка")
@@ -156,6 +154,7 @@ class Main(tkinter.Frame):
         graph.objectbar = self.objectbar
         self.current_graph = graph
         self.current_graph.seted()
+        self.current_graph.build()
 
         for tool in self.tools:
             tool["state"] = tkinter.NORMAL
@@ -173,7 +172,8 @@ class Main(tkinter.Frame):
         elif self.mode == 3 or self.mode == 4:
             self.current_graph.create_line(event.x, event.y,
                                            True if self.mode == 4 else False)
-
+        elif self.mode == 5:
+            self.current_graph.merging_vertices(event.x, event.y)
 
 
 if __name__ == "__main__":

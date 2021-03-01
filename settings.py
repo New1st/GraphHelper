@@ -9,10 +9,14 @@ TOOLS_SETTINGS_ARRAY = [
      "icon": "resources/icons/add_edge.png"},
     {"name": "Режим добавления дуг", "side": "left",
      "icon": "resources/icons/add_edge_org.png"},
-    {"name": "Режим расщепления вершиины", "side": "left",
-     "icon": "resources/icons/dividing_vertex.png"},
     {"name": "Режим слияния вершиин", "side": "left",
      "icon": "resources/icons/merging_vertices.png"},
+    {"name": "Очистить холст", "side": "right",
+     "icon": "resources/icons/clear_all.png"},
+    {"name": "Удалить объект", "side": "right",
+     "icon": "resources/icons/delete_obj.png"},
+    {"name": "Видимость линий", "side": "right",
+     "icon": "resources/icons/view_lines_text.png"},
     ]
 
 ABOUT_STRINGS = [
@@ -24,7 +28,7 @@ ABOUT_STRINGS = [
     Сибирского федерального университета"
     ]
 
-ALLOWED_CHARACTERS = ["\n", " ", "-", "0", "1", "2"]
+ALLOWED_CHARACTERS = ["\n", " ", "0", "1"]
 
 MESSAGES = {
     "GREETING": "Создайте или загрузите граф",

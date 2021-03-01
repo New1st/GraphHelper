@@ -27,7 +27,67 @@ class Graph:
         self.canvas.bind('<Button-3>', self.clear_select)
         self.canvas.bind('<Motion>', self._show_tip)
 
-    def create_vertex(self, x, y):
+    def build(self):
+        if self.matrix:
+            max_x = self.canvas['width']
+            max_y = self.canvas['height']
+
+            start_x = 20
+            now_x = 20
+            now_y = 20
+
+            count_row = int(max_x)-20 // 60
+            now_row = 1
+            for i in range(0,len(self.matrix)):
+                self.create_vertex(now_x, now_y)
+                if (now_row+1>count_row):
+                    now_x = start_x
+                    now_y += 60
+                now_x += 60
+                now_row += 1
+
+            now_index = 0
+            for i in self.matrix:
+                first = self.vertices[now_index]
+                for j in range(now_index, len(i)):
+                    name = "e" + str(self.current_line)
+                    if int(i[j]) == 1:
+                        second = self.vertices[j]
+                        new_line = self.canvas.create_line(
+                            first.x, first.y,
+                            (first.x + second.x)//2, (first.y + second.y)//2,
+                            second.x, second.y, smooth="true",
+                            arrow=tkinter.NONE,
+                            arrowshape=(15,20,3))
+                        reference_point = [
+                            (first.x + second.x)//2,
+                            (first.y + second.y)//2]
+
+                        frame = tkinter.LabelFrame(
+                            self.objectbar, text="Ребро",
+                            bg="#EBEBEB", bd=2, width=160, height=40)
+                        frame.pack(anchor = tkinter.NW, side = tkinter.TOP,
+                            fill = tkinter.X)
+
+                        label = tkinter.Label(
+                            frame,
+                            text=name+" = {"+first.name+", "+ \
+                                second.name+"}",
+                            justify = tkinter.LEFT, bg = "#EBEBEB")
+                        label.pack(side = tkinter.LEFT)
+
+                        label = self.canvas.create_text(reference_point[0],
+                            reference_point[1], text=name)
+
+                        self.current_line += 1
+                        self.canvas.lift(first.obj)
+                        self.canvas.lift(second.obj)
+                        self.lines.append(line.Line(
+                            name, first, second, reference_point,
+                            False, new_line, label, frame, self.canvas))
+                now_index += 1
+
+    def create_vertex(self, x, y, manual=True):
         """Создание вершиины
 
         Проверяется близость нажатия к какой-либо вершине. При подходящей
@@ -35,8 +95,9 @@ class Graph:
         Создается объект класса Вернишина, добавляется в список.
 
         """
-        if not self._check_coordinates_vertex(x, y):
-            return False
+        if manual:
+            if not self._check_coordinates_vertex(x, y):
+                return False
 
         name = "V"+str(self.current_vertex)
         circle = self.canvas.create_oval(x-5, y+5, x+5, y-5, fill = "#8b90f7")
@@ -132,7 +193,7 @@ class Graph:
                 self.select_vertex_2.x, self.select_vertex_2.y, smooth="true",
                 arrow=tkinter.LAST if directed else tkinter.NONE,
                 arrowshape=(15,20,3))
-            reference_point = [x,y]
+            reference_point = [x, y, 0]
 
             frame = tkinter.LabelFrame(
                 self.objectbar, text="Дуга" if directed else "Ребро",
@@ -176,12 +237,75 @@ class Graph:
             self._update_vertex_position(self.movable, x, y)
             self.clear_select(None)
 
+    def merging_vertices(self, x, y):
+        vertex = self._check_coordinates_vertex(x, y, "self")
+        if vertex:
+            x = vertex.x
+            y = vertex.y
+            if self.select_vertex == None:
+                self.select_vertex = vertex
+                self.select_point = self.canvas.create_oval(x-2, y+2, x+2, y-2,
+                                                            fill= "#000000")
+            else:
+                self.create_vertex((vertex.x + self.select_vertex.x)//2,
+                                   (vertex.y + self.select_vertex.y)//2, False)
+                new = self.vertices[len(self.vertices)-1]
+
+                cleaner = []
+                for now in self.lines:
+                    if (now.first_vertex == vertex and
+                            now.second_vertex == self.select_vertex or
+                            now.first_vertex == self.select_vertex and
+                            now.second_vertex == vertex):
+                        self.canvas.delete(now.obj)
+                        self.canvas.delete(now.label)
+                        now.frame.destroy()
+                        now.first_vertex = None
+                        now.second_vertex = None
+                        cleaner.append(now)
+                        now = None
+
+                for i in cleaner:
+                    self.lines.remove(i)
+                cleaner.clear()
+
+                new_lines = self.get_lines(vertex) + self.get_lines(self.select_vertex)
+                loops = 0
+                for now in new_lines:
+                    if now.is_loop():
+                        now.first_vertex = new
+                        now.second_vertex = new
+                        now.reference_point[2] = loops
+                        loops += 1
+                    elif (now.first_vertex == vertex or
+                            now.first_vertex == self.select_vertex):
+                        now.first_vertex = new
+                    elif (now.second_vertex == vertex or
+                            now.second_vertex == self.select_vertex):
+                        now.second_vertex = new
+                    now.update()
+
+                cleaner = []
+                for now in self.vertices:
+                    if (now == vertex or now == self.select_vertex):
+                        self.canvas.delete(now.obj)
+                        self.canvas.delete(now.label)
+                        now.frame.destroy()
+                        cleaner.append(now)
+                        now = None
+
+                for i in cleaner:
+                    self.vertices.remove(i)
+                cleaner.clear()
+
+                self.clear_select(None)
+
     def _update_vertex_position(self, obj, x, y):
         obj.x = x
         obj.y = y
         for now in self.lines:
             if now.belong(obj):
-                now.update(self.count_lines(obj, obj) if now.is_loop else 0)
+                now.update(self.count_lines(obj, obj) if now.is_loop() else 0)
         obj.update()
 
     def clear_select(self, event):
@@ -211,6 +335,7 @@ class Graph:
                 if (now.x >= x - 7 and now.x <= x + 7 and
                         now.y >= y - 7 and now.y <= y + 7):
                     return now
+
             return False
 
     def _check_coordinates(self, x, y):
@@ -244,3 +369,10 @@ class Graph:
         elif self.movable != None:
             self.tip = self.canvas.create_oval(x-5, y+5, x+5, y-5,
                                                fill = "#808080")
+
+    def get_lines(self, vertex):
+        out = []
+        for now in self.lines:
+            if now.belong(vertex):
+                out.append(now)
+        return(out)
