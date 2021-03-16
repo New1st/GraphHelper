@@ -31,7 +31,7 @@ class NewGraphWindow(tkinter.Toplevel):
         text_frame.pack(side=tkinter.TOP, fill=tkinter.X)
 
         self.text_field = tkinter.Text(
-            text_frame, bg="#ffffff", height=13,
+            text_frame, bg="#ffffff", height=11,
             highlightthickness=0, wrap="none")
         self.text_field.pack(side=tkinter.TOP, fill=tkinter.X)
         self.text_field.bind("<Key>", self._check_keys)

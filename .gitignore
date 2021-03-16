@@ -1,0 +1,5 @@
+__pycache__/
+*.py[cod]
+
+classes/__pycache__/
+*.py[cod]
